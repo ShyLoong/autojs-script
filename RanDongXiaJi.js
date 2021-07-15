@@ -11,16 +11,15 @@ function start() {
         sleep(3000);
         while (textContains("运动+").exists()) {
             textContains("运动+").findOnce().click();
-            toast("收集运动卡币");sleep(1000);
+            toast("收集运动卡币");sleep(3000);
         }
         while (textContains("任务+").exists()) {
             textContains("任务+").findOnce().click();
-            toast("收集任务卡币");sleep(1000);
+            toast("收集任务卡币");sleep(3000);
         }
     }
     doTask();
 }
-//TODO:浏览小程序
 function doTask() {
     className("android.widget.Image").text("c143642ad0850f7a").findOne().parent().click()
     toast("打开任务界面");
@@ -37,8 +36,8 @@ function doTask() {
             sleep(3000);
             for (var i = 0; i < 5; i++) {
                 className("android.view.View").scrollable(true).depth(15).findOne().child(i).child(0).child(4).click();
-                toast("加购第" + i + "个商品");
-                sleep(3000);
+                toast("加购第" + (i+1) + "个商品");
+                sleep(5000);
                 back();
                 sleep(3000);
             }
@@ -67,6 +66,16 @@ function doTask() {
         sleep(1000);//给提示一个显示的时间
         back();
         sleep(3000);
+        for(var i=0;!className("android.widget.Image").text("c143642ad0850f7a").exists()&&i<5;i++){
+            toast("返回");
+            sleep(1000);
+            back();
+            sleep(3000);
+            if(i==5){
+                toast("无法返回任务界面,请重新执行脚本");
+                exit();
+            }
+        }//避免弹窗,返回任务界面
     }
     
 }
