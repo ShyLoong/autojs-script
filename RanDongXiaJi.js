@@ -11,11 +11,13 @@ function start() {
         sleep(3000);
         while (textContains("运动+").exists()) {
             textContains("运动+").findOnce().click();
-            toast("收集运动卡币"); sleep(3000);
+            toast("收集运动卡币");
+            sleep(3000);
         }
         while (textContains("任务+").exists()) {
             textContains("任务+").findOnce().click();
-            toast("收集任务卡币"); sleep(3000);
+            toast("收集任务卡币");
+            sleep(3000);
         }
     }
     doTask();
