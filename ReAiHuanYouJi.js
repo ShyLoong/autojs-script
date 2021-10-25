@@ -18,13 +18,16 @@ function start() {
         log("请打开任务界面!");
         sleep(6000);
     }
+    let count = 0;
     while (1) {
         // 任务类型一,浏览8s任务
-        if (textContains("8s").exists()) {
+        if (count<3&&textContains("8s").exists()) {
+            count++;
             for (let i = 0; i < 2; i++) {
                 let task_8s = className("android.view.View").textContains("8s").find();
                 if (task_8s[i] && task_8s[i].parent()) {
                     for (let j = 0; !isFinishByText(task_8s[i].parent().child(1).text()) && j < 7; j++) {
+                        count = 0;
                         log("浏览8s任务");
                         task_8s[i].parent().child(3).click();
                         sleep(12000);
@@ -55,14 +58,14 @@ function start() {
             log("普通点击浏览任务");
             className("android.view.View").textStartsWith("浏览可得").findOne().parent().child(3).click();
             sleep(5000);
-            if(textContains("互动种草").exists()){
+            if (textContains("互动种草").exists()) {
                 let task = className("android.view.View").text("5000汪汪币").findOne().parent().parent();
-                for(let i=0;i<5;i++){
+                for (let i = 0; i < 5; i++) {
                     task.child(2).child(5).click();
                     sleep(5000);
                     back();
                     sleep(3000);
-                }   
+                }
             }
             back();
             sleep(3000);
@@ -71,14 +74,14 @@ function start() {
             log("普通点击浏览任务");
             className("android.view.View").textStartsWith("浏览并关注可得").findOne().parent().child(3).click();
             sleep(5000);
-            if(textContains("互动种草").exists()){
+            if (textContains("互动种草").exists()) {
                 let task = className("android.view.View").text("5000汪汪币").findOne().parent().parent();
-                for(let i=0;i<5;i++){
+                for (let i = 0; i < 5; i++) {
                     task.child(2).child(5).click();
                     sleep(5000);
                     back();
                     sleep(3000);
-                }   
+                }
             }
             back();
             sleep(3000);
