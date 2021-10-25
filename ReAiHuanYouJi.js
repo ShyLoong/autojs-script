@@ -31,7 +31,7 @@ function start() {
                         if (task_8s[i] && task_8s[i].parent()) {
                             log("浏览8s任务");
                             task_8s[i].parent().child(3).click();
-                            sleep(12000);
+                            sleep(15000);
                             back();
                             sleep(3000);
                         } else {
