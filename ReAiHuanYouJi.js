@@ -18,23 +18,23 @@ function start() {
         log("请打开任务界面!");
         sleep(6000);
     }
-    let count = 0;
+    let isFinishedTask1 = 0;
     while (1) {
         // 任务类型一,浏览8s任务
-        if (count < 3 && textContains("8s").exists()) {
-            count++;
+        if (isFinishedTask1 == 0 && textContains("8s").exists()) {
+            isFinishedTask1 = 1;
             for (let i = 0; i < 2; i++) {
                 let task_8s = className("android.view.View").textContains("8s").find();
                 if (task_8s[i] && task_8s[i].parent()) {
                     for (let j = 0; !isFinishByText(task_8s[i].parent().child(1).text()) && j < 7; j++) {
-                        count = 0;
-                        if (task_8s[i]&&task_8s[i].parent()) {
+                        isFinishedTask1 = 0;
+                        if (task_8s[i] && task_8s[i].parent()) {
                             log("浏览8s任务");
                             task_8s[i].parent().child(3).click();
                             sleep(12000);
                             back();
                             sleep(3000);
-                        }else{
+                        } else {
                             break;
                         }
                     }
@@ -56,6 +56,7 @@ function start() {
             }
             back();//返回任务界面
             sleep(3000);
+            isFinishedTask1 = 0;
         }
         //任务类型三,普通点击浏览任务
         else if (textStartsWith("浏览可得").exists() && !isFinish("浏览可得")) {
@@ -68,11 +69,12 @@ function start() {
                     task.child(2).child(5).click();
                     sleep(5000);
                     back();
-                    sleep(3000);
+                    sleep(5000);
                 }
             }
             back();
             sleep(3000);
+            isFinishedTask1 = 0;
         }
         else if (textStartsWith("浏览并关注可得").exists() && !isFinish("浏览并关注可得")) {
             log("普通点击浏览任务");
@@ -89,6 +91,7 @@ function start() {
             }
             back();
             sleep(3000);
+            isFinishedTask1 = 0;
         }
         // else if (textStartsWith("参与").exists() && !isFinish("参与")) {
         //     log("普通点击浏览任务")
@@ -108,6 +111,7 @@ function start() {
             }
             back();
             sleep(3000);
+            isFinishedTask1 = 0;
         }
         //结束
         else {
@@ -117,10 +121,10 @@ function start() {
         //避免弹窗,返回任务界面
         for (let i = 1; !textContains("累计任务奖励").exists() && i <= 5; i++) {
             if (i == 5) {
-                toast("无法返回任务界面,脚本结束");
+                log("无法返回任务界面,脚本结束");
                 exit();
             }
-            toast("无法返回任务界面,第" + i + "次尝试返回(最多4次)");
+            log("无法返回任务界面,第" + i + "次尝试返回(最多4次)");
             sleep(1000);
             back();
             sleep(3000);
