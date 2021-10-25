@@ -1,117 +1,127 @@
 // [注意事项] 打开任务界面
+
+//页面切换时间间隙默认为3000毫秒,可以根据网络情况修改
+let timeGap = 3000;
+//8s浏览任务时间默认为12000毫秒,可以根据网络情况修改
+let viewTime = 12000;
+
 start()
 function start() {
     console.show();
     auto.waitFor();
     app.launch("com.jingdong.app.mall");
-    // log("请打开京东app首页")
-    // className("android.widget.TextView").descContains("搜索框").findOne().click()
-    // sleep(1000)
-    // descContains("搜索框").findOne().setText("热爱环游记")
-    // className("android.widget.TextView").text("搜索").findOne().click()
-    // sleep(3000)//等一下再点
-    // click(500, 1000)
-    // sleep(3000)
-    // sleep(3000)
     while (!textContains("累计任务奖励").exists()) {
         // className("android.view.View").textContains("打卡领红包").findOne().click()
         log("请打开任务界面!");
-        sleep(6000);
+        sleep(timeGap);
     }
-    let isFinishedTask1 = 0;
+    //任务一已完成
+    let hasFinishedTask1 = 0;
     while (1) {
         // 任务类型一,浏览8s任务
-        if (isFinishedTask1 == 0 && textContains("8s").exists()) {
-            isFinishedTask1 = 1;
+        if (hasFinishedTask1 == 0 && textContains("8s").exists()) {
+            //设置标志位
+            hasFinishedTask1 = 1;
+            //做两个任务
             for (let i = 0; i < 2; i++) {
                 let task_8s = className("android.view.View").textContains("8s").find();
                 if (task_8s[i] && task_8s[i].parent()) {
-                    for (let j = 0; !isFinishByText(task_8s[i].parent().child(1).text()) && j < 7; j++) {
-                        isFinishedTask1 = 0;
+                    let text = task_8s[i].parent().child(1).text();
+                    let allTaskNum = getAllTaskNum(text);
+                    let finishedTaskNum = getFinishedTaskNum(text);
+                    for (let j = finishedTaskNum; j < allTaskNum; j++) {
                         if (task_8s[i] && task_8s[i].parent()) {
+                            log(task_8s[i].parent().child(1).text());
                             log("浏览8s任务");
                             task_8s[i].parent().child(3).click();
-                            sleep(15000);
+                            sleep(viewTime);
                             back();
-                            sleep(3000);
-                        } else {
-                            break;
+                            sleep(timeGap);
+                            //完成一次任务后重置
+                            hasFinishedTask1 = 0; 
+                        }else{
+                           hasFinishedTask1 = 0; 
+                           break;
                         }
                     }
                 }
             }
         }
         //任务类型二,累计浏览加购5个商品
-        else if (textContains("累计浏览").exists() && !isFinish("累计浏览")) {
+        else if (textContains("累计浏览").exists()&&!isFinish("累计浏览")) {
+            let win = textContains("累计浏览").findOnce().parent();
+            log(win.child(1).text());
             log("累计浏览5个商品");
-            className("android.view.View").textContains("累计浏览").findOne().parent().child(3).click();
-            sleep(5000);
-            let win = textStartsWith("¥").findOnce().parent().parent();
-            for (let i = 0; i < 5; i++) {
+            let text = win.child(1).text();
+            let allTaskNum = getAllTaskNum(text);
+            let finishedTaskNum = getFinishedTaskNum(text);
+            win.child(3).click();
+            sleep(timeGap);
+            let inlineWin = textStartsWith("¥").findOnce().parent().parent();
+            for (let i = Number(finishedTaskNum); i < Number(allTaskNum); i++) {
                 log("浏览第" + (i + 1) + "个商品");
-                win.child(i).child(5).click();
-                sleep(5000);
+                if(!inlineWin){
+                    back();
+                    sleep(timeGap);
+                }
+                inlineWin.child(i).child(5).click();
+                sleep(timeGap);
                 back();
-                sleep(3000);
+                sleep(timeGap);
             }
             back();//返回任务界面
-            sleep(3000);
-            isFinishedTask1 = 0;
+            sleep(timeGap);
+            //完成一次任务后重置
+            hasFinishedTask1 = 0;
         }
         //任务类型三,普通点击浏览任务
-        else if (textStartsWith("浏览可得").exists() && !isFinish("浏览可得")) {
+        else if (textStartsWith("浏览可得").exists()&&!isFinish("浏览可得")) {
+            let win = textStartsWith("浏览可得").findOnce().parent();
+            log(win.child(1).text());
             log("普通点击浏览任务");
-            className("android.view.View").textStartsWith("浏览可得").findOne().parent().child(3).click();
-            sleep(5000);
-            if (textContains("互动种草").exists()) {
-                let task = className("android.view.View").text("5000汪汪币").findOne().parent().parent();
-                for (let i = 0; i < 5; i++) {
-                    task.child(2).child(5).click();
-                    sleep(5000);
-                    back();
-                    sleep(5000);
-                }
-            }
+            win.child(3).click();
+            sleep(timeGap);
+            zhongc();
             back();
-            sleep(3000);
-            isFinishedTask1 = 0;
+            sleep(timeGap);
+            //完成一次任务后重置
+            hasFinishedTask1 = 0;
         }
-        else if (textStartsWith("浏览并关注可得").exists() && !isFinish("浏览并关注可得")) {
+        else if (textStartsWith("浏览并关注可得").exists()&&!isFinish("浏览并关注可得")) {
+            log(textStartsWith("浏览并关注可得").findOnce().parent().child(1).text());
             log("普通点击浏览任务");
             className("android.view.View").textStartsWith("浏览并关注可得").findOne().parent().child(3).click();
-            sleep(5000);
-            if (textContains("互动种草").exists()) {
-                let task = className("android.view.View").text("5000汪汪币").findOne().parent().parent();
-                for (let i = 0; i < 5; i++) {
-                    task.child(2).child(5).click();
-                    sleep(5000);
-                    back();
-                    sleep(3000);
-                }
-            }
+            sleep(timeGap);
+            zhongc();
             back();
-            sleep(3000);
-            isFinishedTask1 = 0;
+            sleep(timeGap);
+            //完成一次任务后重置
+            hasFinishedTask1 = 0;
         }
-        // else if (textStartsWith("参与").exists() && !isFinish("参与")) {
-        //     log("普通点击浏览任务")
-        //     className("android.view.View").textStartsWith("参与").findOne().parent().child(3).click()
-        //     sleep(5000)
-        //     back()
-        //     sleep(3000)
-        // }
-        //任务类型四,入会
-        else if (textContains("入会").exists() && !isFinish("入会")) {
+        else if (textContains("小程序").exists()&&!isFinish("小程序")) {
+            let win = textContains("小程序").findOnce().parent();
+            log(win.child(1).text());
+            log("普通点击浏览任务");
+            win.child(3).click();
+            sleep(timeGap);
+            back();
+            sleep(timeGap);
+            //完成一次任务后重置
+            hasFinishedTask1 = 0;
+        }
+        else if (textContains("入会").exists()&&!isFinish("入会")) {
+            log(textContains("入会").findOnce().parent().child(1).text());
             log("浏览入会界面，获取金币");
             className("android.view.View").textContains("入会").findOne().parent().child(3).click();
-            sleep(3000);
+            sleep(timeGap);
             if (textContains("加入店铺会员").exists()) {
-                log("脚本结束（涉及个人隐私,请手动加入店铺会员或者忽略加入会员任务)");
+                log("脚本结束（涉及个人隐私,请手动加入店铺会员)");
                 break;
             }
             back();
-            sleep(3000);
-            isFinishedTask1 = 0;
+            sleep(timeGap);
+            //完成一次任务后重置
+            hasFinishedTask1 = 0;
         }
         //结束
         else {
@@ -125,9 +135,28 @@ function start() {
                 exit();
             }
             log("无法返回任务界面,第" + i + "次尝试返回(最多4次)");
-            sleep(1000);
             back();
-            sleep(3000);
+            sleep(timeGap);
+        }
+    }
+}
+function getAllTaskNum(text) {
+    let allTask = text.charAt(text.length - 2)
+    return allTask;
+}
+function getFinishedTaskNum(text) {
+    let finishedTask = text.charAt(text.length - 4)
+    return finishedTask;
+}
+function zhongc() {
+    if (textContains("互动种草").exists()) {
+        let task = className("android.view.View").text("5000汪汪币").findOne().parent().parent();
+        for (let i = 0; i < 5; i++) {
+            log("浏览第" + (i + 1) + "个商品");
+            task.child(2).child(5).click();
+            sleep(timeGap);
+            back();
+            sleep(timeGap);
         }
     }
 }
@@ -138,28 +167,11 @@ function isFinish(keyWord) {
     } else {
         str = textContains(keyWord).findOnce().parent().child(1).text();
     }
-    log(str);
     let finishedTask = str.charAt(str.length - 4);
     let allTask = str.charAt(str.length - 2);
-    sleep(3000)
-    if (finishedTask == allTask) {
+    sleep(timeGap)
+    if (finishedTask >= allTask) {
         return true;
     }
     return false;
 }
-function isFinishByText(text) {
-    log(text);
-    let finishedTask = text.charAt(text.length - 4);
-    let allTask = text.charAt(text.length - 2);
-    sleep(3000);
-    if (finishedTask == allTask) {
-        return true;
-    }
-    return false;
-}
-// function taskNum(text) {
-//     log(text)
-//     let finishedTask = text.charAt(text.length - 4)
-//     let allTask = text.charAt(text.length - 2)
-//     return allTask-finishedTask;
-// }
