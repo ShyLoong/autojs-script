@@ -21,18 +21,22 @@ function start() {
     let count = 0;
     while (1) {
         // 任务类型一,浏览8s任务
-        if (count<3&&textContains("8s").exists()) {
+        if (count < 3 && textContains("8s").exists()) {
             count++;
             for (let i = 0; i < 2; i++) {
                 let task_8s = className("android.view.View").textContains("8s").find();
                 if (task_8s[i] && task_8s[i].parent()) {
                     for (let j = 0; !isFinishByText(task_8s[i].parent().child(1).text()) && j < 7; j++) {
                         count = 0;
-                        log("浏览8s任务");
-                        task_8s[i].parent().child(3).click();
-                        sleep(12000);
-                        back();
-                        sleep(3000);
+                        if (task_8s[i]&&task_8s[i].parent()) {
+                            log("浏览8s任务");
+                            task_8s[i].parent().child(3).click();
+                            sleep(12000);
+                            back();
+                            sleep(3000);
+                        }else{
+                            break;
+                        }
                     }
                 }
             }
