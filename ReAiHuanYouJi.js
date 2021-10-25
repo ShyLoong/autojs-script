@@ -20,7 +20,7 @@ function start() {
     }
     while (1) {
         // 任务类型一,浏览8s任务
-        if (textContains("8s").exists() && !isFinish("8s")) {
+        if (textContains("8s").exists()) {
             for (let i = 0; i < 2; i++) {
                 let task_8s = className("android.view.View").textContains("8s").find();
                 if (task_8s[i] && task_8s[i].parent()) {
@@ -55,16 +55,34 @@ function start() {
             log("普通点击浏览任务");
             className("android.view.View").textStartsWith("浏览可得").findOne().parent().child(3).click();
             sleep(5000);
+            if(textContains("互动种草").exists()){
+                let task = className("android.view.View").text("5000汪汪币").findOne().parent().parent();
+                for(let i=0;i<5;i++){
+                    task.child(2).child(5).click();
+                    sleep(5000);
+                    back();
+                    sleep(3000);
+                }   
+            }
             back();
             sleep(3000);
         }
-        // else if (textStartsWith("浏览并关注").exists() && !isFinish("浏览并关注")) {
-        //     log("普通点击浏览任务")
-        //     className("android.view.View").textStartsWith("浏览并关注").findOne().parent().child(3).click()
-        //     sleep(5000)
-        //     back()
-        //     sleep(3000)
-        // }
+        else if (textStartsWith("浏览并关注可得").exists() && !isFinish("浏览并关注可得")) {
+            log("普通点击浏览任务");
+            className("android.view.View").textStartsWith("浏览并关注可得").findOne().parent().child(3).click();
+            sleep(5000);
+            if(textContains("互动种草").exists()){
+                let task = className("android.view.View").text("5000汪汪币").findOne().parent().parent();
+                for(let i=0;i<5;i++){
+                    task.child(2).child(5).click();
+                    sleep(5000);
+                    back();
+                    sleep(3000);
+                }   
+            }
+            back();
+            sleep(3000);
+        }
         // else if (textStartsWith("参与").exists() && !isFinish("参与")) {
         //     log("普通点击浏览任务")
         //     className("android.view.View").textStartsWith("参与").findOne().parent().child(3).click()
@@ -104,7 +122,7 @@ function start() {
 }
 function isFinish(keyWord) {
     let str;
-    if (keyWord == "浏览可得" || keyWord == "浏览并关注" || keyWord == "参与") {
+    if (keyWord == "浏览可得" || keyWord == "浏览并关注可得" || keyWord == "参与") {
         str = textStartsWith(keyWord).findOnce().parent().child(1).text();
     } else {
         str = textContains(keyWord).findOnce().parent().child(1).text();
