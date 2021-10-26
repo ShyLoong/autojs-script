@@ -8,3 +8,4 @@ autojs脚本程序,用于完成安卓设备上的重复性操作.
 - 请打开任务界面,再开启脚本
 - 有可能出现空指针,undefined等异常,重新启动脚本即可.
 - autojs版本为4.1.0
+Autojs4.1.0下载(天翼云):https://cloud.189.cn/t/RNBNv2jMZjiu (访问码:2tmr)
