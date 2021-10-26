@@ -38,17 +38,17 @@ function start() {
                             back();
                             sleep(timeGap);
                             //完成一次任务后重置
-                            hasFinishedTask1 = 0; 
-                        }else{
-                           hasFinishedTask1 = 0; 
-                           break;
+                            hasFinishedTask1 = 0;
+                        } else {
+                            hasFinishedTask1 = 0;
+                            break;
                         }
                     }
                 }
             }
         }
         //任务类型二,累计浏览加购5个商品
-        else if (textContains("累计浏览").exists()&&!isFinish("累计浏览")) {
+        else if (textContains("累计浏览").exists() && !isFinish("累计浏览")) {
             let win = textContains("累计浏览").findOnce().parent();
             log(win.child(1).text());
             log("累计浏览5个商品");
@@ -56,11 +56,11 @@ function start() {
             let allTaskNum = getAllTaskNum(text);
             let finishedTaskNum = getFinishedTaskNum(text);
             win.child(3).click();
-            sleep(timeGap);
+            sleep(timeGap*2);
             let inlineWin = textStartsWith("¥").findOnce().parent().parent();
             for (let i = Number(finishedTaskNum); i < Number(allTaskNum); i++) {
                 log("浏览第" + (i + 1) + "个商品");
-                if(!inlineWin){
+                if (!inlineWin) {
                     back();
                     sleep(timeGap);
                 }
@@ -75,7 +75,7 @@ function start() {
             hasFinishedTask1 = 0;
         }
         //任务类型三,普通点击浏览任务
-        else if (textStartsWith("浏览可得").exists()&&!isFinish("浏览可得")) {
+        else if (textStartsWith("浏览可得").exists() && !isFinish("浏览可得")) {
             let win = textStartsWith("浏览可得").findOnce().parent();
             log(win.child(1).text());
             log("普通点击浏览任务");
@@ -87,7 +87,7 @@ function start() {
             //完成一次任务后重置
             hasFinishedTask1 = 0;
         }
-        else if (textStartsWith("浏览并关注可得").exists()&&!isFinish("浏览并关注可得")) {
+        else if (textStartsWith("浏览并关注可得").exists() && !isFinish("浏览并关注可得")) {
             log(textStartsWith("浏览并关注可得").findOnce().parent().child(1).text());
             log("普通点击浏览任务");
             className("android.view.View").textStartsWith("浏览并关注可得").findOne().parent().child(3).click();
@@ -98,7 +98,7 @@ function start() {
             //完成一次任务后重置
             hasFinishedTask1 = 0;
         }
-        else if (textContains("小程序").exists()&&!isFinish("小程序")) {
+        else if (textContains("小程序").exists() && !isFinish("小程序")) {
             let win = textContains("小程序").findOnce().parent();
             log(win.child(1).text());
             log("普通点击浏览任务");
@@ -109,7 +109,7 @@ function start() {
             //完成一次任务后重置
             hasFinishedTask1 = 0;
         }
-        else if (textContains("入会").exists()&&!isFinish("入会")) {
+        else if (textContains("入会").exists() && !isFinish("入会")) {
             log(textContains("入会").findOnce().parent().child(1).text());
             log("浏览入会界面，获取金币");
             className("android.view.View").textContains("入会").findOne().parent().child(3).click();
