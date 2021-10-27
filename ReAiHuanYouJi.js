@@ -1,7 +1,7 @@
 // [注意事项] 打开任务界面
 
 //页面切换时间间隙默认为3000毫秒,可以根据网络情况修改
-let timeGap = 3000;
+let timeGap = 4396 ;
 //8s浏览任务时间默认为14396毫秒,可以根据网络情况修改
 let viewTime = 14396;
 
@@ -65,7 +65,7 @@ function start() {
                     sleep(timeGap);
                 }
                 inlineWin.child(i).child(5).click();
-                sleep(timeGap);
+                sleep(timeGap*2);
                 back();
                 sleep(timeGap);
             }
