@@ -60,8 +60,10 @@ function start() {
             let inlineWin = textStartsWith("¥").findOnce().parent().parent();
             for (let i = Number(finishedTaskNum); i < Number(allTaskNum); i++) {
                 log("浏览第" + (i + 1) + "个商品");
-                if (!inlineWin) {
+                log(inlineWin)
+                while (!inlineWin) {
                     back();
+                    log("有意外弹窗,返回");     
                     sleep(timeGap);
                 }
                 inlineWin.child(i).child(5).click();
