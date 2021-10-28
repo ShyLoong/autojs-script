@@ -47,7 +47,7 @@ function start() {
                 }
             }
         }
-        //任务类型二,累计浏览加购5个商品
+        // 任务类型二,累计浏览加购5个商品
         else if (textContains("累计浏览").exists() && !isFinish("累计浏览")) {
             let win = textContains("累计浏览").findOnce().parent();
             log(win.child(1).text());
@@ -60,16 +60,19 @@ function start() {
             let inlineWin = textStartsWith("¥").findOnce().parent().parent();
             for (let i = Number(finishedTaskNum); i < Number(allTaskNum); i++) {
                 log("浏览第" + (i + 1) + "个商品");
-                log(inlineWin)
-                while (!inlineWin) {
-                    back();
-                    log("有意外弹窗,返回");     
-                    sleep(timeGap);
-                }
                 inlineWin.child(i).child(5).click();
                 sleep(timeGap*2);
                 back();
                 sleep(timeGap);
+                for(let i=0;!className("android.view.View").textContains("5个商品领汪汪币").findOnce()&&i<4;i++) {
+                    if(i==3){
+                        log("无法返回退出脚本,请重新执行脚本")
+                        exit();
+                    }
+                    back();
+                    log("无法返回加购页面,第"+(i+1)+"次返回(最多三次)");     
+                    sleep(timeGap);                    
+                }
             }
             back();//返回任务界面
             sleep(timeGap);
