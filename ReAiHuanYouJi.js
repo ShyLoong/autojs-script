@@ -176,10 +176,7 @@ function zhongc() {
         for (let i = 0; i < 5; i++) {
             log("浏览第" + (i + 1) + "个商品");
             // task.child(2).child(5).click();
-            if (i == 4) {
-                swipe(device.width / 2, device.height/2, device.width / 2, device.height/3, 2000);
-            }
-            let b = task.child(2).child(5).bounds();
+            let b = task.child(2).child(4).bounds();
             click(b.centerX(), b.centerY());
             sleep(timeGap);
             back();
