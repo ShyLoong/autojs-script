@@ -1,7 +1,7 @@
 // [注意事项] 打开任务界面
 
 //页面切换时间间隙默认为4396毫秒,可以根据网络情况修改
-let timeGap = 4396 ;
+let timeGap = 4396;
 //8s浏览任务时间默认为14396毫秒,可以根据网络情况修改
 let viewTime = 14396;
 
@@ -60,24 +60,27 @@ function start() {
             // win.child(3).click();
             let b = win.child(3).bounds();
             click(b.centerX(), b.centerY());
-            sleep(timeGap*2);
+            sleep(timeGap * 2);
             let inlineWin = textStartsWith("¥").findOnce().parent().parent();
             for (let i = Number(finishedTaskNum); i < Number(allTaskNum); i++) {
                 log("浏览第" + (i + 1) + "个商品");
-                inlineWin.child(i).child(5).click();
-                // let b = inlineWin.child(i).child(5).bounds();
-                // click(b.centerX(), b.centerY());
-                sleep(timeGap*2);
+                // inlineWin.child(i).child(5).click();
+                if (i == 4) {
+                    swipe(device.width / 2, device.height/2, device.width / 2, device.height/3, 2000);
+                }
+                let b = inlineWin.child(i).child(5).bounds();
+                click(b.centerX(), b.centerY());
+                sleep(timeGap * 2);
                 back();
                 sleep(timeGap);
-                for(let i=0;!className("android.view.View").textContains("5个商品领汪汪币").findOnce()&&i<4;i++) {
-                    if(i==3){
+                for (let i = 0; !className("android.view.View").textContains("5个商品领汪汪币").findOnce() && i < 4; i++) {
+                    if (i == 3) {
                         log("无法返回退出脚本,请重新执行脚本")
                         exit();
                     }
                     back();
-                    log("无法返回加购页面,第"+(i+1)+"次返回(最多三次)");     
-                    sleep(timeGap);                    
+                    log("无法返回加购页面,第" + (i + 1) + "次返回(最多三次)");
+                    sleep(timeGap);
                 }
             }
             back();//返回任务界面
@@ -172,9 +175,12 @@ function zhongc() {
         let task = className("android.view.View").text("5000汪汪币").findOne().parent().parent();
         for (let i = 0; i < 5; i++) {
             log("浏览第" + (i + 1) + "个商品");
-            task.child(2).child(5).click();
-            // let b = task.child(2).child(5).bounds();
-            // click(b.centerX(), b.centerY());
+            // task.child(2).child(5).click();
+            if (i == 4) {
+                swipe(device.width / 2, device.height/2, device.width / 2, device.height/3, 2000);
+            }
+            let b = task.child(2).child(5).bounds();
+            click(b.centerX(), b.centerY());
             sleep(timeGap);
             back();
             sleep(timeGap);
