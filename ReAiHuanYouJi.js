@@ -33,7 +33,9 @@ function start() {
                         if (task_8s[i] && task_8s[i].parent()) {
                             log(task_8s[i].parent().child(1).text());
                             log("浏览8s任务");
-                            task_8s[i].parent().child(3).click();
+                            let b = task_8s[i].parent().child(3).bounds();
+                            click(b.centerX(), b.centerY());
+                            // task_8s[i].parent().child(3).click();
                             sleep(viewTime);
                             back();
                             sleep(timeGap);
@@ -55,12 +57,16 @@ function start() {
             let text = win.child(1).text();
             let allTaskNum = getAllTaskNum(text);
             let finishedTaskNum = getFinishedTaskNum(text);
-            win.child(3).click();
+            // win.child(3).click();
+            let b = win.child(3).bounds();
+            click(b.centerX(), b.centerY());
             sleep(timeGap*2);
             let inlineWin = textStartsWith("¥").findOnce().parent().parent();
             for (let i = Number(finishedTaskNum); i < Number(allTaskNum); i++) {
                 log("浏览第" + (i + 1) + "个商品");
                 inlineWin.child(i).child(5).click();
+                // let b = inlineWin.child(i).child(5).bounds();
+                // click(b.centerX(), b.centerY());
                 sleep(timeGap*2);
                 back();
                 sleep(timeGap);
@@ -84,7 +90,9 @@ function start() {
             let win = textStartsWith("浏览可得").findOnce().parent();
             log(win.child(1).text());
             log("普通点击浏览任务");
-            win.child(3).click();
+            // win.child(3).click();
+            let b = win.child(3).bounds();
+            click(b.centerX(), b.centerY());
             sleep(timeGap);
             zhongc();
             back();
@@ -95,7 +103,9 @@ function start() {
         else if (textStartsWith("浏览并关注可得").exists() && !isFinish("浏览并关注可得")) {
             log(textStartsWith("浏览并关注可得").findOnce().parent().child(1).text());
             log("普通点击浏览任务");
-            className("android.view.View").textStartsWith("浏览并关注可得").findOne().parent().child(3).click();
+            // className("android.view.View").textStartsWith("浏览并关注可得").findOne().parent().child(3).click();
+            let b = className("android.view.View").textStartsWith("浏览并关注可得").findOne().parent().child(3).bounds();
+            click(b.centerX(), b.centerY());
             sleep(timeGap);
             zhongc();
             back();
@@ -107,7 +117,9 @@ function start() {
             let win = textContains("小程序").findOnce().parent();
             log(win.child(1).text());
             log("普通点击浏览任务");
-            win.child(3).click();
+            // win.child(3).click();
+            let b = win.child(3).bounds();
+            click(b.centerX(), b.centerY());
             sleep(timeGap);
             back();
             sleep(timeGap);
@@ -117,7 +129,9 @@ function start() {
         else if (textContains("入会").exists() && !isFinish("入会")) {
             log(textContains("入会").findOnce().parent().child(1).text());
             log("浏览入会界面，获取金币");
-            className("android.view.View").textContains("入会").findOne().parent().child(3).click();
+            // className("android.view.View").textContains("入会").findOne().parent().child(3).click();
+            let b = className("android.view.View").textContains("入会").findOne().parent().child(3).bounds();
+            click(b.centerX(), b.centerY());
             sleep(timeGap);
             if (textContains("加入店铺会员").exists()) {
                 log("脚本结束（涉及个人隐私,请手动加入店铺会员)");
@@ -159,6 +173,8 @@ function zhongc() {
         for (let i = 0; i < 5; i++) {
             log("浏览第" + (i + 1) + "个商品");
             task.child(2).child(5).click();
+            // let b = task.child(2).child(5).bounds();
+            // click(b.centerX(), b.centerY());
             sleep(timeGap);
             back();
             sleep(timeGap);
