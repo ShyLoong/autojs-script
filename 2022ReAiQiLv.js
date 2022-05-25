@@ -7,13 +7,16 @@
 // [注意事项] 请打开任务界面
 //页面切换时间间隙默认为2396毫秒,可以根据网络情况修改
 let timeGap = 2396;
-//8s浏览任务时间默认为12396毫秒,可以根据网络情况修改
-let viewTime = 12396;
+//8s浏览任务时间默认为13396毫秒,可以根据网络情况修改
+let viewTime = 13396;
+
+//todo 顺序
 
 //浏览可得任务可使用标志（别改！）
 let enableFlag1 = true;
 //入会可使用标志（别改！）
 let enableFlag2 = true;
+let pauseJoinMember = true;
 start();
 function start() {
     console.show();
@@ -33,7 +36,7 @@ function start() {
                 let allTaskNum = getAllTaskNum(text);
                 let finishedTaskNum = getFinishedTaskNum(text);
                 for (let j = finishedTaskNum; j < allTaskNum; j++) {
-                    log("去完成第" + j + "个浏览8s任务");
+                    log("去完成第" + (Number(j) + 1) + "个浏览8s任务");
                     if (task_8s[i] && task_8s[i].parent()) {
                         view8STask(task_8s[i]);
                     } else {
@@ -59,7 +62,7 @@ function start() {
             sleep(timeGap * 2);
             let inlineWin = textStartsWith("¥").findOnce().parent().parent().parent();
             for (let i = finishedTaskNum; i < allTaskNum; i++) {
-                log("浏览第" + (Number(i)+1) + "个商品");
+                log("浏览第" + (Number(i) + 1) + "个商品");
                 // inlineWin.child(i).child(5).click();
                 if (i == 4) {
                     //超过四个滑动窗口再点击
@@ -83,7 +86,7 @@ function start() {
             refresh();
         }
         // 任务三 点击浏览类型
-        else if(textStartsWith("浏览可得").exists() && !isFinish("浏览可得")&&enableFlag1){
+        else if (textStartsWith("浏览可得").exists() && !isFinish("浏览可得") && enableFlag1) {
             handleCommonViewTask("浏览可得");
         }
         else if (textStartsWith("浏览并关注可得").exists() && !isFinish("浏览并关注可得")) {
@@ -92,17 +95,20 @@ function start() {
         else if (textStartsWith("去参与小程序").exists() && !isFinish("去参与小程序")) {
             handleCommonViewTask("去参与小程序");
         }
+        else if (textStartsWith("点击首页浮层").exists() && !isFinish("点击首页浮层")) {
+            handleCommonViewTask("点击首页浮层");
+        }
         // 任务四 入会类型
-        else if (textContains("入会").exists() && !isFinish("入会")&&enableFlag2) {
+        else if (textContains("入会").exists() && !isFinish("入会") && enableFlag2) {
             log(textContains("入会").findOnce().parent().child(1).text());
             log("浏览入会界面，获取金币");
             // className("android.view.View").textContains("入会").findOne().parent().child(3).click();
             let b = className("android.view.View").textContains("入会").findOne().parent().child(3).bounds();
             click(b.centerX(), b.centerY());
             sleep(timeGap);
-            if (textContains("加入店铺会员").exists()) {
-                log("脚本结束（涉及个人隐私,请手动加入店铺会员)");
-                enableFlag2=false;
+            if ((textContains("加入店铺会员").exists()||textContains("授权信息，解锁全部会员福利").exists()) && pauseJoinMember) {
+                log("涉及个人隐私,请手动加入店铺会员");
+                enableFlag2 = false;
             }
             refresh();
         }
@@ -121,20 +127,6 @@ function getFinishedTaskNum(text) {
     let finishedTask = text.charAt(text.length - 4)
     return finishedTask;
 }
-// function zhongc() {
-//     if (textContains("互动种草").exists()) {
-//         let task = className("android.view.View").text("5000汪汪币").findOne().parent().parent();
-//         for (let i = 0; i < 5; i++) {
-//             log("浏览第" + (i + 1) + "个商品");
-//             // task.child(2).child(5).click();
-//             let b = task.child(2).child(4).bounds();
-//             click(b.centerX(), b.centerY());
-//             sleep(timeGap);
-//             back();
-//             sleep(timeGap);
-//         }
-//     }
-// }
 function isFinish(keyWord) {
     let str;
     if (keyWord == "8s") {
@@ -148,7 +140,7 @@ function isFinish(keyWord) {
             }
         }
         return true;
-    }else if (keyWord == "浏览可得" || keyWord == "浏览并关注可得" || keyWord == "参与") {
+    } else if (keyWord == "浏览可得" || keyWord == "浏览并关注可得" || keyWord == "参与") {
         str = textStartsWith(keyWord).findOnce().parent().child(1).text();
     } else {
         str = textContains(keyWord).findOnce().parent().child(1).text();
@@ -190,15 +182,29 @@ function view8STask(node) {
 function isTaskView() {
     return textContains("累计任务奖励").exists();
 }
-function handleCommonViewTask(keyWord){
+function handleCommonViewTask(keyWord) {
     log(textStartsWith(keyWord).findOnce().parent().child(1).text());
-    if(textStartsWith(keyWord).findOnce().parent().child(1).text().indexOf("去逛逛并下单")!=-1){
-        enableFlag1=false;
+    if (textStartsWith(keyWord).findOnce().parent().child(1).text().indexOf("去逛逛并下单") != -1) {
+        enableFlag1 = false;
+    }
+    if (textStartsWith(keyWord).findOnce().parent().child(1).text().indexOf("种草城") != -1) {
+        enableFlag1 = false;
     }
     log("普通点击浏览任务");
     let b = className("android.view.View").textStartsWith(keyWord).findOne().parent().child(3).bounds();
     click(b.centerX(), b.centerY());
     sleep(timeGap);
-    // zhongc();
+    if (textContains("品牌种草城").exists()) {
+        for (var j = 0; j < 4; j++) {
+            if (textContains("喜欢").exists()) {
+                let b = textContains("喜欢").findOne().bounds();
+                click(b.centerX(), b.centerY());
+                while (!textContains("喜欢").exists()) {
+                    back();
+                    sleep(timeGap);
+                }
+            }
+        }
+    }
     refresh();
 }
