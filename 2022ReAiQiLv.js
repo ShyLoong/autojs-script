@@ -10,8 +10,6 @@ let timeGap = 2396;
 //8s浏览任务时间默认为13396毫秒,可以根据网络情况修改
 let viewTime = 13396;
 
-//todo 顺序
-
 //浏览可得任务可使用标志（别改！）
 let enableFlag1 = true;
 //入会可使用标志（别改！）
