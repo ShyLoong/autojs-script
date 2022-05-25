@@ -1,18 +1,19 @@
 // 热爱奇旅
-// 任务一 8s可得
-// 任务二 累计浏览
-// 任务三 入会
-// 任务四 小程序
-// 任务五 普通点击
-// todo 封装任务为独立方法
+// 任务一 8s浏览任务
+// 任务二 浏览加购任务
+// 任务三 普通点击任务
+// 任务四 入会
 
-//2022
-// [注意事项] 打开任务界面
-//页面切换时间间隙默认为1396毫秒,可以根据网络情况修改
+// [注意事项] 请打开任务界面
+//页面切换时间间隙默认为2396毫秒,可以根据网络情况修改
 let timeGap = 2396;
-//8s浏览任务时间默认为10396毫秒,可以根据网络情况修改
+//8s浏览任务时间默认为12396毫秒,可以根据网络情况修改
 let viewTime = 12396;
 
+//浏览可得任务可使用标志（别改！）
+let enableFlag1 = true;
+//入会可使用标志（别改！）
+let enableFlag2 = true;
 start();
 function start() {
     console.show();
@@ -58,7 +59,7 @@ function start() {
             sleep(timeGap * 2);
             let inlineWin = textStartsWith("¥").findOnce().parent().parent().parent();
             for (let i = finishedTaskNum; i < allTaskNum; i++) {
-                log("浏览第" + (i + 1) + "个商品");
+                log("浏览第" + (Number(i)+1) + "个商品");
                 // inlineWin.child(i).child(5).click();
                 if (i == 4) {
                     //超过四个滑动窗口再点击
@@ -80,10 +81,35 @@ function start() {
                 }
             }
             refresh();
-        }//结束
+        }
+        // 任务三 点击浏览类型
+        else if(textStartsWith("浏览可得").exists() && !isFinish("浏览可得")&&enableFlag1){
+            handleCommonViewTask("浏览可得");
+        }
+        else if (textStartsWith("浏览并关注可得").exists() && !isFinish("浏览并关注可得")) {
+            handleCommonViewTask("浏览并关注可得");
+        }
+        else if (textStartsWith("去参与小程序").exists() && !isFinish("去参与小程序")) {
+            handleCommonViewTask("去参与小程序");
+        }
+        // 任务四 入会类型
+        else if (textContains("入会").exists() && !isFinish("入会")&&enableFlag2) {
+            log(textContains("入会").findOnce().parent().child(1).text());
+            log("浏览入会界面，获取金币");
+            // className("android.view.View").textContains("入会").findOne().parent().child(3).click();
+            let b = className("android.view.View").textContains("入会").findOne().parent().child(3).bounds();
+            click(b.centerX(), b.centerY());
+            sleep(timeGap);
+            if (textContains("加入店铺会员").exists()) {
+                log("脚本结束（涉及个人隐私,请手动加入店铺会员)");
+                enableFlag2=false;
+            }
+            refresh();
+        }
+        //结束
         else {
             log("四种任务已完成，若有剩余可再启动一次脚本或手动完成");
-            break;
+            exit();
         }
     }
 }
@@ -95,20 +121,20 @@ function getFinishedTaskNum(text) {
     let finishedTask = text.charAt(text.length - 4)
     return finishedTask;
 }
-function zhongc() {
-    if (textContains("互动种草").exists()) {
-        let task = className("android.view.View").text("5000汪汪币").findOne().parent().parent();
-        for (let i = 0; i < 5; i++) {
-            log("浏览第" + (i + 1) + "个商品");
-            // task.child(2).child(5).click();
-            let b = task.child(2).child(4).bounds();
-            click(b.centerX(), b.centerY());
-            sleep(timeGap);
-            back();
-            sleep(timeGap);
-        }
-    }
-}
+// function zhongc() {
+//     if (textContains("互动种草").exists()) {
+//         let task = className("android.view.View").text("5000汪汪币").findOne().parent().parent();
+//         for (let i = 0; i < 5; i++) {
+//             log("浏览第" + (i + 1) + "个商品");
+//             // task.child(2).child(5).click();
+//             let b = task.child(2).child(4).bounds();
+//             click(b.centerX(), b.centerY());
+//             sleep(timeGap);
+//             back();
+//             sleep(timeGap);
+//         }
+//     }
+// }
 function isFinish(keyWord) {
     let str;
     if (keyWord == "8s") {
@@ -163,4 +189,16 @@ function view8STask(node) {
 }
 function isTaskView() {
     return textContains("累计任务奖励").exists();
+}
+function handleCommonViewTask(keyWord){
+    log(textStartsWith(keyWord).findOnce().parent().child(1).text());
+    if(textStartsWith(keyWord).findOnce().parent().child(1).text().indexOf("去逛逛并下单")!=-1){
+        enableFlag1=false;
+    }
+    log("普通点击浏览任务");
+    let b = className("android.view.View").textStartsWith(keyWord).findOne().parent().child(3).bounds();
+    click(b.centerX(), b.centerY());
+    sleep(timeGap);
+    // zhongc();
+    refresh();
 }
