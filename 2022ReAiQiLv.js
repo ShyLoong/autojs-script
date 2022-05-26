@@ -45,6 +45,7 @@ function start() {
                 let text = task_8s[i].parent().child(1).text();
                 let allTaskNum = getAllTaskNum(text);
                 let finishedTaskNum = getFinishedTaskNum(text);
+                log(text);
                 for (let j = finishedTaskNum; j < allTaskNum; j++) {
                     log("第" + (Number(j) + 1) + "次浏览");
                     if (task_8s[i] && task_8s[i].parent()) {
@@ -60,10 +61,10 @@ function start() {
         // 任务类型二,累计浏览4个商品
         else if (textContains("累计浏览").exists() && !isFinish("累计浏览")) {
             let win = textContains("累计浏览").findOnce().parent();
-            log(win.child(1).text());
             let text = win.child(1).text();
             let allTaskNum = getAllTaskNum(text);
             let finishedTaskNum = getFinishedTaskNum(text);
+            log(text);
             // win.child(3).click();
             let b = win.child(3).bounds();
             click(b.centerX(), b.centerY());
@@ -109,7 +110,6 @@ function start() {
         // 任务四 入会类型
         else if (textContains("入会").exists() && !isFinish("入会") && enableFlag2) {
             log(textContains("入会").findOnce().parent().child(1).text());
-            log("浏览入会界面，获取金币");
             // className("android.view.View").textContains("入会").findOne().parent().child(3).click();
             let b = className("android.view.View").textContains("入会").findOne().parent().child(3).bounds();
             click(b.centerX(), b.centerY());
@@ -200,6 +200,7 @@ function handleCommonViewTask(keyWord) {
     let text = textStartsWith(keyWord).findOnce().parent().child(1).text();
     let allTaskNum = getAllTaskNum(text);
     let finishedTaskNum = getFinishedTaskNum(text);
+    log(text);
     if (text.indexOf("去逛逛并下单") != -1) {
         //下单任务无法完成
         enableFlag1 = false;
@@ -208,7 +209,6 @@ function handleCommonViewTask(keyWord) {
         return;
     }
     if (text.indexOf("种草城") != -1) {
-        log("种草城浏览任务");
         let b = className("android.view.View").textStartsWith(keyWord).findOne().parent().child(3).bounds();
         click(b.centerX(), b.centerY());
         sleep(timeGap * 2);
