@@ -1,21 +1,33 @@
-// 热爱奇旅
+/***********************************************/
+// [热爱奇旅]
 // 任务一 8s浏览任务
 // 任务二 浏览加购任务
 // 任务三 普通点击任务
 // 任务四 入会
 
-// [注意事项] 请打开任务界面
+// [注意事项] 
+// - 请打开任务界面
+
+/***********************************************/
+
+// [可配置变量]
 //页面切换时间间隙默认为2396毫秒,可以根据网络情况修改
 let timeGap = 2396;
 //8s浏览任务时间默认为13396毫秒,可以根据网络情况修改
 let viewTime = 13396;
-
-//浏览可得任务可使用标志（别改！）
-let enableFlag1 = true;
-//入会可使用标志（别改！）
-let enableFlag2 = true;
+//是否暂停浏览入会界面
+//默认为true，如果已开通大多数会员可设置为false。
 let pauseJoinMember = true;
+
+// [全局变量]
+//浏览可得关键字任务可使用标志
+let enableFlag1 = true;
+//入会关键字任务可使用标志
+let enableFlag2 = true;
+
+/***********************************************/
 start();
+end();
 function start() {
     console.show();
     auto.waitFor();
@@ -34,14 +46,12 @@ function start() {
                 let allTaskNum = getAllTaskNum(text);
                 let finishedTaskNum = getFinishedTaskNum(text);
                 for (let j = finishedTaskNum; j < allTaskNum; j++) {
-                    log("去完成第" + (Number(j) + 1) + "个浏览8s任务");
+                    log("第" + (Number(j) + 1) + "次浏览");
                     if (task_8s[i] && task_8s[i].parent()) {
                         view8STask(task_8s[i]);
                     } else {
-                        //避免弹窗报错
-                        back();
-                        sleep(timeGap);
-                        view8STask(task_8s[i]);
+                        log("未返回任务界面，请重新启动脚本");
+                        end();
                     }
                 }
             }
@@ -74,7 +84,7 @@ function start() {
                 for (let i = 0; !className("android.view.View").textContains("浏览4个商品").findOnce() && !className("android.view.View").textContains("浏览加购4个商品").findOnce() && i < 4; i++) {
                     if (i == 3) {
                         log("请重新执行脚本")
-                        exit();
+                        end();
                     }
                     back();
                     sleep(timeGap);
@@ -104,7 +114,7 @@ function start() {
             let b = className("android.view.View").textContains("入会").findOne().parent().child(3).bounds();
             click(b.centerX(), b.centerY());
             sleep(timeGap);
-            if ((textContains("加入店铺会员").exists()||textContains("授权信息，解锁全部会员福利").exists()) && pauseJoinMember) {
+            if ((textContains("加入店铺会员").exists() || textContains("授权信息，解锁全部会员福利").exists()) && pauseJoinMember) {
                 log("涉及个人隐私,请手动加入店铺会员");
                 enableFlag2 = false;
             }
@@ -113,7 +123,7 @@ function start() {
         //结束
         else {
             log("四种任务已完成，若有剩余可再启动一次脚本或手动完成");
-            exit();
+            end();
         }
     }
 }
@@ -159,7 +169,7 @@ function refresh() {
     let b0 = className("android.view.View").text("做任务 赚金币做任务 赚金币").findOne().parent().child(1).bounds();
     click(b0.centerX(), b0.centerY());
     log("关闭窗口")
-    sleep(timeGap);
+    sleep(timeGap / 2);
     if (className("android.widget.TextView").text("抽奖").exists) {
         let win = className("android.widget.TextView").text("抽奖").findOnce().parent().parent().parent().parent();
         let b = win.child(5).bounds();
@@ -170,38 +180,63 @@ function refresh() {
         }
     }
 }
+function end(){
+    log("脚本免费开源，github链接为https://github.com/ShyLoong/autojs-script");
+    exit();
+}
 function view8STask(node) {
     let b = node.parent().child(3).bounds();
     click(b.centerX(), b.centerY());
     sleep(viewTime);
-    back();
-    sleep(timeGap);
+    while (!isTaskView()) {
+        back();
+        sleep(timeGap);
+    }
 }
 function isTaskView() {
     return textContains("累计任务奖励").exists();
 }
 function handleCommonViewTask(keyWord) {
-    log(textStartsWith(keyWord).findOnce().parent().child(1).text());
-    if (textStartsWith(keyWord).findOnce().parent().child(1).text().indexOf("去逛逛并下单") != -1) {
+    let text = textStartsWith(keyWord).findOnce().parent().child(1).text();
+    let allTaskNum = getAllTaskNum(text);
+    let finishedTaskNum = getFinishedTaskNum(text);
+    if (text.indexOf("去逛逛并下单") != -1) {
+        //下单任务无法完成
         enableFlag1 = false;
+        log("下单任务无法完成")
+        refresh();
+        return;
     }
-    if (textStartsWith(keyWord).findOnce().parent().child(1).text().indexOf("种草城") != -1) {
-        enableFlag1 = false;
-    }
-    log("普通点击浏览任务");
-    let b = className("android.view.View").textStartsWith(keyWord).findOne().parent().child(3).bounds();
-    click(b.centerX(), b.centerY());
-    sleep(timeGap);
-    if (textContains("品牌种草城").exists()) {
-        for (var j = 0; j < 4; j++) {
-            if (textContains("喜欢").exists()) {
-                let b = textContains("喜欢").findOne().bounds();
-                click(b.centerX(), b.centerY());
-                while (!textContains("喜欢").exists()) {
+    if (text.indexOf("种草城") != -1) {
+        log("种草城浏览任务");
+        let b = className("android.view.View").textStartsWith(keyWord).findOne().parent().child(3).bounds();
+        click(b.centerX(), b.centerY());
+        sleep(timeGap * 2);
+        if (textStartsWith("喜欢").clickable().exists()) {
+            let arr = textStartsWith("喜欢").clickable().find();
+            let rand = random(0,arr.length-4);
+            for (let i = rand; i < rand+(allTaskNum-finishedTaskNum); i++) {
+                log("点击喜欢");
+                arr[i].click();
+                sleep(timeGap);
+                while (!textStartsWith("喜欢").clickable().exists()) {
                     back();
                     sleep(timeGap);
                 }
             }
+        }
+        refresh();
+        return;
+    }
+    for (let j = finishedTaskNum; j < allTaskNum; j++) {
+        log("第" + (Number(j) + 1) + "次浏览");
+        let b = className("android.view.View").textStartsWith(keyWord).findOne().parent().child(3).bounds();
+        click(b.centerX(), b.centerY());
+        sleep(timeGap);
+        //返回任务界面
+        while (!isTaskView()) {
+            back();
+            sleep(timeGap);
         }
     }
     refresh();
