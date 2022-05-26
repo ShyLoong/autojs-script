@@ -168,7 +168,7 @@ function refresh() {
     }
     let b0 = className("android.view.View").text("做任务 赚金币做任务 赚金币").findOne().parent().child(1).bounds();
     click(b0.centerX(), b0.centerY());
-    log("关闭窗口")
+    // log("关闭窗口")
     sleep(timeGap / 2);
     if (className("android.widget.TextView").text("抽奖").exists) {
         let win = className("android.widget.TextView").text("抽奖").findOnce().parent().parent().parent().parent();
