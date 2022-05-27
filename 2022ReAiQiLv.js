@@ -174,7 +174,7 @@ function refresh() {
         let win = className("android.widget.TextView").text("抽奖").findOnce().parent().parent().parent().parent();
         let b = win.child(5).bounds();
         click(b.centerX(), b.centerY());
-        sleep(timeGap);
+        sleep(timeGap/2);
         if (isTaskView()) {
             log("刷新成功");
         }
